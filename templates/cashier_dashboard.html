@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Welcome, {{ current_user.username }} (Cashier)</h2>
+<p>Branch: <strong>{{ branch.name }}</strong></p>
+<a href="{{ url_for('pos') }}" class="btn btn-lg btn-success mb-4"><i class="bi bi-cart-plus"></i> New Sale</a>
+
+<h5>Your Recent Transactions</h5>
+<table class="table table-sm">
+    <thead class="table-dark">
+        <tr><th>Receipt #</th><th>Total</th><th>Time</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for sale in recent_sales %}
+    <tr>
+        <td>{{ sale.receipt_number }}</td>
+        <td>KES {{ "%.2f"|format(sale.total_amount) }}</td>
+        <td>{{ sale.sale_date.strftime('%H:%M') }}</td>
+        <td><a href="{{ url_for('receipt', sale_id=sale.id) }}" class="btn btn-sm btn-outline-info">View</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No transactions yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

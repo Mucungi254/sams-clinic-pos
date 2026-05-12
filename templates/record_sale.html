@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Record Sale - {{ branch.name }}</h2>
+<form method="POST" class="card card-custom p-4 w-50">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.product_id.label(class="form-label") }}
+        {{ form.product_id(class="form-select") }}
+    </div>
+    <div class="mb-3">
+        {{ form.quantity_sold.label(class="form-label") }}
+        {{ form.quantity_sold(class="form-control", placeholder="Enter quantity") }}
+    </div>
+    {{ form.submit(class="btn btn-success") }}
+</form>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow p-4">
+            <h3 class="text-center mb-3">Secure Your Admin Account</h3>
+            <p>Your account requires two‑factor authentication. Scan the QR code below with your authenticator app (e.g. Google Authenticator).</p>
+            <div class="text-center">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="img-fluid mb-3" style="max-width:250px;">
+            </div>
+            <p><strong>Manual setup key:</strong> <code>{{ secret }}</code></p>
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="otp_token" class="form-label">Enter the 6‑digit code from the app</label>
+                    <input type="text" name="otp_token" id="otp_token" class="form-control" placeholder="6‑digit code" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Verify & Log In</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

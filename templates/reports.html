@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Reports – {{ branch.name }}</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stat-card text-center">
+            <h5>Today Sales</h5>
+            <h3>KES {{ "%.2f"|format(daily_sales) }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center">
+            <h5>Today Profit</h5>
+            <h3>KES {{ "%.2f"|format(daily_profit) }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Export Reports</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <label for="start_date" class="form-label">Start Date</label>
+                <input type="date" id="start_date" class="form-control mb-3">
+            </div>
+            <div class="col-md-6">
+                <label for="end_date" class="form-label">End Date</label>
+                <input type="date" id="end_date" class="form-control mb-3">
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Sales Reports</h6>
+                <button onclick="exportReport('sales', 'pdf')" class="btn btn-danger mb-2 me-2">Export Sales PDF</button>
+                <button onclick="exportReport('sales', 'excel')" class="btn btn-success mb-2">Export Sales Excel</button>
+            </div>
+            <div class="col-md-6">
+                <h6>Profit Reports</h6>
+                <button onclick="exportReport('profit', 'pdf')" class="btn btn-danger mb-2 me-2">Export Profit PDF</button>
+                <button onclick="exportReport('profit', 'excel')" class="btn btn-success mb-2">Export Profit Excel</button>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Inventory Reports</h6>
+                <button onclick="exportReport('inventory', 'pdf')" class="btn btn-danger mb-2 me-2">Export Inventory PDF</button>
+                <button onclick="exportReport('inventory', 'excel')" class="btn btn-success mb-2">Export Inventory Excel</button>
+            </div>
+            <div class="col-md-6">
+                <h6>Expiry Reports</h6>
+                <button onclick="exportReport('expiry', 'pdf')" class="btn btn-danger mb-2 me-2">Export Expiry PDF</button>
+                <button onclick="exportReport('expiry', 'excel')" class="btn btn-success mb-2">Export Expiry Excel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportReport(type, format) {
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+    
+    let url = `/export/${type}/${format}`;
+    if (startDate && endDate) {
+        url += `?start_date=${startDate}&end_date=${endDate}`;
+    }
+    
+    window.open(url, '_blank');
+}
+
+// Set today's date as default
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('start_date').value = today;
+    document.getElementById('end_date').value = today;
+});
+</script>
+{% endblock %}

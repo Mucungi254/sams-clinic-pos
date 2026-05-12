@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>{{ branch.name }} – Admin Dashboard</h2>
+
+<!-- Profit Summary Section -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stat-card bg-success text-white">
+            <h5>Today's Profit</h5>
+            <h3>KES {{ "%.2f"|format(today_profit) }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-info text-white">
+            <h5>Monthly Profit</h5>
+            <h3>KES {{ "%.2f"|format(monthly_profit) }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-warning text-white">
+            <h5>Top Product</h5>
+            <h4>{{ top_product[0] if top_product else 'N/A' }}</h4>
+            <small>KES {{ "%.2f"|format(top_product[1] if top_product else 0) }}</small>
+        </div>
+    </div>
+</div>
+
+<!-- Sales & Operations Section -->
+<div class="row">
+    <div class="col-md-3"><div class="stat-card"><h5>Today Sales</h5><h3>{{ today_sales }}</h3></div></div>
+    <div class="col-md-3"><div class="stat-card"><h5>Monthly Sales</h5><h3>{{ monthly_sales }}</h3></div></div>
+    <div class="col-md-3"><div class="stat-card"><h5>Revenue Today</h5><h3>KES {{ "%.2f"|format(total_revenue_today) }}</h3></div></div>
+    <div class="col-md-3"><div class="stat-card"><h5>Total Products</h5><h3>{{ total_products }}</h3></div></div>
+</div>
+
+<!-- Alerts Section -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="stat-card bg-danger text-white">
+            <h5>Low Stock</h5>
+            <h3>{{ low_stock }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-warning text-white">
+            <h5>Expiring Soon</h5>
+            <h3>{{ expiring }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card bg-primary text-white">
+            <h5>Active Staff</h5>
+            <h3>{{ active_staff }}</h3>
+        </div>
+    </div>
+</div>
+{% endblock %}

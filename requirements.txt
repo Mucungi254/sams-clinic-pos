@@ -1,0 +1,12 @@
+flask
+flask-sqlalchemy
+flask-login
+flask-wtf
+pymysql
+werkzeug
+gunicorn
+pyotp
+qrcode[pil]
+pillow
+reportlab
+openpyxl

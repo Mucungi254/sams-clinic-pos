@@ -1,0 +1,34 @@
+SAMS_CLINIC_POS/
+├── app.py
+├── config.py
+├── models.py
+├── forms.py
+├── requirements.txt
+├── /static/
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       └── pos.js
+├── /templates/
+│   ├── layout.html
+│   ├── login.html
+│   ├── admin_dashboard.html
+│   ├── cashier_dashboard.html
+│   ├── pharmacist_dashboard.html
+│   ├── products.html
+│   ├── add_product.html
+│   ├── edit_product.html
+│   ├── pos.html
+│   ├── receipt.html
+│   ├── suppliers.html
+│   ├── add_supplier.html
+│   ├── edit_supplier.html
+│   ├── stock_in.html
+│   ├── stock_transfer.html
+│   ├── expiry_alerts.html
+│   ├── sales_history.html
+│   ├── reports.html
+│   ├── users.html
+│   ├── add_user.html
+│   └── select_branch.html
+└── /uploads/

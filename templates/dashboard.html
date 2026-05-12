@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2 class="mb-3"><i class="bi bi-shop"></i> {{ branch.name }} Dashboard</h2>
+<div class="row">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon text-primary"><i class="bi bi-box-seam"></i></div>
+            <h5>Total Products</h5>
+            <h2>{{ total_products }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon text-success"><i class="bi bi-cash-stack"></i></div>
+            <h5>Stock Value (Cost)</h5>
+            <h2>KES {{ "%.2f"|format(total_stock_value) }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon text-warning"><i class="bi bi-exclamation-triangle"></i></div>
+            <h5>Low Stock (<10)</h5>
+            <h2>{{ low_stock }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon text-danger"><i class="bi bi-calendar-x"></i></div>
+            <h5>Expiring Soon</h5>
+            <h2>{{ expiring_soon }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <h5>Today's Sales</h5>
+            <h3>{{ today_sales }} transactions</h3>
+            <p>Revenue: KES {{ "%.2f"|format(today_revenue) }}</p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card">
+            <h5>Recent Sales</h5>
+            <table class="table table-sm">
+                <thead><tr><th>Product</th><th>Qty</th><th>Time</th></tr></thead>
+                <tbody>
+                {% for sale in recent_sales %}
+                <tr>
+                    <td>{{ sale.product.name }}</td>
+                    <td>{{ sale.quantity_sold }}</td>
+                    <td>{{ sale.sale_date.strftime('%H:%M') }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3">No sales today.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

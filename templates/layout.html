@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMS Clinic POS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <div class="sidebar">
+        <h4 class="px-3 mb-4 text-white">SAMS Clinic</h4>
+
+        {% if current_user.role.name == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint == 'admin_dashboard' }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+        <a href="{{ url_for('select_branch') }}" class="{{ 'active' if request.endpoint == 'select_branch' }}"><i class="bi bi-arrow-left-right me-2"></i>Switch Branch</a>
+        <a href="{{ url_for('products') }}" class="{{ 'active' if request.endpoint in ['products','add_product','edit_product'] }}"><i class="bi bi-box-seam me-2"></i>Products</a>
+        <a href="{{ url_for('suppliers') }}" class="{{ 'active' if request.endpoint in ['suppliers','add_supplier','edit_supplier'] }}"><i class="bi bi-truck me-2"></i>Suppliers</a>
+        <a href="{{ url_for('stock_in') }}" class="{{ 'active' if request.endpoint == 'stock_in' }}"><i class="bi bi-plus-circle me-2"></i>Stock In</a>
+        <a href="{{ url_for('stock_transfer') }}" class="{{ 'active' if request.endpoint == 'stock_transfer' }}"><i class="bi bi-send me-2"></i>Transfer</a>
+        <a href="{{ url_for('expiry_alerts') }}" class="{{ 'active' if request.endpoint == 'expiry_alerts' }}"><i class="bi bi-exclamation-triangle me-2"></i>Expiry Alerts</a>
+        <a href="{{ url_for('sales_history') }}" class="{{ 'active' if request.endpoint == 'sales_history' }}"><i class="bi bi-clock-history me-2"></i>Sales History</a>
+        <a href="{{ url_for('reports') }}" class="{{ 'active' if request.endpoint == 'reports' }}"><i class="bi bi-file-earmark-bar-graph me-2"></i>Reports</a>
+        <a href="{{ url_for('users') }}" class="{{ 'active' if request.endpoint in ['users','add_user'] }}"><i class="bi bi-people me-2"></i>Users</a>
+        <!-- New: Admin's own 2FA link -->
+        <a href="{{ url_for('enable_2fa', user_id=current_user.id) }}" class="{{ 'active' if request.endpoint == 'enable_2fa' }}"><i class="bi bi-shield-lock me-2"></i>My 2FA</a>
+
+        {% elif current_user.role.name == 'pharmacist' %}
+        <a href="{{ url_for('pharmacist_dashboard') }}" class="{{ 'active' if request.endpoint == 'pharmacist_dashboard' }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+        <a href="{{ url_for('products') }}" class="{{ 'active' if request.endpoint in ['products','add_product','edit_product'] }}"><i class="bi bi-box-seam me-2"></i>Products</a>
+        <a href="{{ url_for('suppliers') }}" class="{{ 'active' if request.endpoint in ['suppliers','add_supplier','edit_supplier'] }}"><i class="bi bi-truck me-2"></i>Suppliers</a>
+        <a href="{{ url_for('stock_in') }}" class="{{ 'active' if request.endpoint == 'stock_in' }}"><i class="bi bi-plus-circle me-2"></i>Stock In</a>
+        <a href="{{ url_for('expiry_alerts') }}" class="{{ 'active' if request.endpoint == 'expiry_alerts' }}"><i class="bi bi-exclamation-triangle me-2"></i>Expiry Alerts</a>
+
+        {% elif current_user.role.name == 'cashier' %}
+        <a href="{{ url_for('cashier_dashboard') }}" class="{{ 'active' if request.endpoint == 'cashier_dashboard' }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+        <a href="{{ url_for('pos') }}" class="{{ 'active' if request.endpoint == 'pos' }}"><i class="bi bi-cart-check me-2"></i>Point of Sale</a>
+        <a href="{{ url_for('sales_history') }}" class="{{ 'active' if request.endpoint == 'sales_history' }}"><i class="bi bi-clock-history me-2"></i>My Sales</a>
+        {% endif %}
+
+        <hr class="text-secondary">
+        <a href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-left me-2"></i>Logout</a>
+        <div class="px-3 mt-4 small text-secondary">Logged as {{ current_user.username }} ({{ current_user.role.name }})</div>
+    </div>
+    {% endif %}
+
+    <div class="main-content">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+              {{ msg }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

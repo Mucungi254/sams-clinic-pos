@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Stock Transfer</h2>
+<form method="POST" class="card p-4 w-50">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.from_branch_id.label(class="form-label") }} {{ form.from_branch_id(class="form-select") }}</div>
+    <div class="mb-3">{{ form.to_branch_id.label(class="form-label") }} {{ form.to_branch_id(class="form-select") }}</div>
+    <div class="mb-3">{{ form.product_id.label(class="form-label") }} {{ form.product_id(class="form-select") }}</div>
+    <div class="mb-3">{{ form.quantity.label(class="form-label") }} {{ form.quantity(class="form-control", placeholder="Quantity") }}</div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

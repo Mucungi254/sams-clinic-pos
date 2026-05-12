@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+@media print {
+    body * { visibility: hidden; }
+    #receipt-content, #receipt-content * { visibility: visible; }
+    #receipt-content { position: absolute; left: 0; top: 0; width: 100%; }
+    .d-print-none { display: none !important; }
+    .card { border: none !important; box-shadow: none !important; }
+    body { margin: 0; padding: 10px; font-family: 'Courier New', monospace; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #000; padding: 5px; text-align: left; }
+}
+</style>
+<div class="card p-4" id="receipt-content" style="max-width:400px; margin:auto; font-family: 'Courier New', monospace;">
+    <div class="text-center mb-3">
+        <h4>SAMS Clinic</h4>
+        <p>{{ sale.branch.name }} | {{ sale.branch.location }}</p>
+    </div>
+    <hr>
+    <p><strong>Receipt #:</strong> {{ sale.receipt_number }}</p>
+    <p><strong>Date:</strong> {{ sale.sale_date.strftime('%Y-%m-%d %H:%M') }}</p>
+    <p><strong>Cashier:</strong> {{ sale.user.username }}</p>
+    <table class="table table-sm">
+        <thead class="table-light">
+            <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+        {% for item in sale.items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ "%.2f"|format(item.price) }}</td>
+            <td>{{ "%.2f"|format(item.price * item.quantity) }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h5 class="text-end">Total: KES {{ "%.2f"|format(sale.total_amount) }}</h5>
+    
+    <!-- Payment Details -->
+    <hr>
+    <p><strong>Payment Method:</strong> {{ sale.payment_method.title() }}</p>
+    
+    {% if sale.payment_method == 'cash' %}
+        <p><strong>Cash Received:</strong> KES {{ "%.2f"|format(sale.amount_received) }}</p>
+        <p><strong>Balance Given:</strong> KES {{ "%.2f"|format(sale.balance_given) }}</p>
+    {% elif sale.payment_method == 'mpesa' %}
+        <p><strong>M-Pesa Amount:</strong> KES {{ "%.2f"|format(sale.mpesa_amount) }}</p>
+        {% if sale.mpesa_code %}
+        <p><strong>Transaction Code:</strong> {{ sale.mpesa_code }}</p>
+        {% endif %}
+    {% elif sale.payment_method == 'mixed' %}
+        <p><strong>Cash Amount:</strong> KES {{ "%.2f"|format(sale.cash_amount) }}</p>
+        <p><strong>M-Pesa Amount:</strong> KES {{ "%.2f"|format(sale.mpesa_amount) }}</p>
+        {% if sale.mpesa_code %}
+        <p><strong>M-Pesa Code:</strong> {{ sale.mpesa_code }}</p>
+        {% endif %}
+        {% if sale.balance_given > 0 %}
+        <p><strong>Balance Given:</strong> KES {{ "%.2f"|format(sale.balance_given) }}</p>
+        {% endif %}
+    {% endif %}
+</div>
+<div class="text-center mt-3">
+    <button onclick="window.print()" class="btn btn-primary btn-lg d-print-none">
+        Print Receipt
+    </button>
+    <button onclick="window.close()" class="btn btn-secondary d-print-none ms-2">
+        Close
+    </button>
+</div>
+{% endblock %}

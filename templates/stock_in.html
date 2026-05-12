@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Stock In – {{ branch.name }}</h2>
+<form method="POST" class="card p-4 w-50">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.product_id.label(class="form-label") }} {{ form.product_id(class="form-select") }}</div>
+    <div class="mb-3">{{ form.supplier_id.label(class="form-label") }} {{ form.supplier_id(class="form-select") }}</div>
+    <div class="mb-3">{{ form.quantity.label(class="form-label") }} {{ form.quantity(class="form-control", placeholder="Quantity added to stock") }}</div>
+    <div class="mb-3">{{ form.buying_price.label(class="form-label") }} {{ form.buying_price(class="form-control", placeholder="Cost price per unit") }}</div>
+    {{ form.submit(class="btn btn-success") }}
+</form>
+{% endblock %}

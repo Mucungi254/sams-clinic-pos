@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Edit Product – {{ product.name }}</h2>
+<form method="POST" class="card p-4 w-75">
+    {{ form.hidden_tag() }}
+    <div class="row">
+        <div class="col-md-6 mb-3">{{ form.name.label(class="form-label") }} {{ form.name(class="form-control") }}</div>
+        <div class="col-md-6 mb-3">{{ form.barcode.label(class="form-label") }} {{ form.barcode(class="form-control") }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">{{ form.batch_number.label(class="form-label") }} {{ form.batch_number(class="form-control") }}</div>
+        <div class="col-md-6 mb-3">
+            {{ form.category_id.label(class="form-label") }}
+            <div class="input-group">
+                {{ form.category_id(class="form-select") }}
+                <button type="button" class="btn btn-outline-primary" onclick="addNewCategory()">
+                    <i class="bi bi-plus-circle"></i> Add New
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">{{ form.supplier_id.label(class="form-label") }} {{ form.supplier_id(class="form-select") }}</div>
+        <div class="col-md-6 mb-3">{{ form.purchase_price.label(class="form-label") }} {{ form.purchase_price(class="form-control") }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">{{ form.selling_price.label(class="form-label") }} {{ form.selling_price(class="form-control") }}</div>
+        <div class="col-md-4 mb-3">{{ form.quantity.label(class="form-label") }} {{ form.quantity(class="form-control") }}</div>
+        <div class="col-md-4 mb-3">{{ form.expiry_date.label(class="form-label") }} {{ form.expiry_date(class="form-control") }}</div>
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+
+<!-- Category Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="categoryForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="categoryName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function addNewCategory() {
+    const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
+    modal.show();
+}
+
+document.getElementById('categoryForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('categoryName').value;
+    const description = document.getElementById('categoryDescription').value;
+    
+    try {
+        const response = await fetch('/add_category_quick', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name, description})
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Add new category to dropdown
+            const select = document.getElementById('category_id');
+            const option = document.createElement('option');
+            option.value = data.category_id;
+            option.textContent = data.category_name;
+            option.selected = true;
+            select.appendChild(option);
+            
+            // Close modal and reset form
+            bootstrap.Modal.getInstance(document.getElementById('categoryModal')).hide();
+            document.getElementById('categoryForm').reset();
+            
+            alert('Category added successfully!');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error adding category');
+    }
+});
+</script>
+{% endblock %}

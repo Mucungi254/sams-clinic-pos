@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Point of Sale – {{ branch.name }}</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card p-3 mb-3">
+            <input type="text" id="barcode-input" class="form-control mb-2" placeholder="Type product name or scan barcode..." onkeypress="handleBarcode(event)" autocomplete="off">
+            <input type="text" id="search" class="form-control" placeholder="Search product name..." onkeyup="searchProduct()">
+        </div>
+        <div id="product-results" class="border p-2" style="max-height:400px; overflow-y:auto;"></div>
+    </div>
+    <div class="col-md-6">
+        <h5>Cart</h5>
+        <table class="table table-sm table-bordered">
+            <thead class="table-dark">
+                <tr><th>Product</th><th>Qty</th><th>Total</th><th></th></tr>
+            </thead>
+            <tbody id="cart-items"></tbody>
+        </table>
+        <h4>Total: KES <span id="cart-total">0.00</span></h4>
+        
+        <!-- Payment Method Selection -->
+        <div class="mb-3">
+            <label class="form-label">Payment Method</label>
+            <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="payment_type" id="payment_cash" value="cash" checked>
+                <label class="btn btn-outline-primary" for="payment_cash">Cash</label>
+                
+                <input type="radio" class="btn-check" name="payment_type" id="payment_mpesa" value="mpesa">
+                <label class="btn btn-outline-primary" for="payment_mpesa">M-Pesa</label>
+                
+                <input type="radio" class="btn-check" name="payment_type" id="payment_mixed" value="mixed">
+                <label class="btn btn-outline-primary" for="payment_mixed">Mixed</label>
+            </div>
+        </div>
+        
+        <!-- Payment Details -->
+        <div id="payment-details" class="card mb-3">
+            <div class="card-body">
+                <!-- Cash Payment -->
+                <div id="cash-payment" class="payment-section">
+                    <h6>Cash Payment</h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label">Total Amount:</label>
+                            <input type="text" class="form-control" id="cash_total" readonly value="0.00">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Cash Received:</label>
+                            <input type="number" class="form-control" id="cash_received" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label class="form-label">Change:</label>
+                        <input type="text" class="form-control" id="cash_change" readonly value="0.00">
+                    </div>
+                </div>
+                
+                <!-- M-Pesa Payment -->
+                <div id="mpesa-payment" class="payment-section" style="display:none;">
+                    <h6>M-Pesa Payment</h6>
+                    <div class="mb-2">
+                        <label class="form-label">M-Pesa Amount:</label>
+                        <input type="number" class="form-control" id="mpesa_amount" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Transaction Code:</label>
+                        <input type="text" class="form-control" id="mpesa_code" placeholder="e.g. SGH762KLM">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Phone Number (Optional):</label>
+                        <input type="text" class="form-control" id="mpesa_phone" placeholder="07XX XXX XXX">
+                    </div>
+                </div>
+                
+                <!-- Mixed Payment -->
+                <div id="mixed-payment" class="payment-section" style="display:none;">
+                    <h6>Mixed Payment</h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label">Cash Amount:</label>
+                            <input type="number" class="form-control" id="mixed_cash" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">M-Pesa Amount:</label>
+                            <input type="number" class="form-control" id="mixed_mpesa" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label class="form-label">Remaining Balance:</label>
+                        <input type="text" class="form-control" id="mixed_remaining" readonly value="0.00">
+                    </div>
+                    <div class="mt-2">
+                        <label class="form-label">M-Pesa Transaction Code:</label>
+                        <input type="text" class="form-control" id="mixed_mpesa_code" placeholder="e.g. SGH762KLM">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Complete Sale Button -->
+        <button class="btn btn-success btn-lg w-100" onclick="checkout()" id="complete_sale">
+            Complete Sale
+        </button>
+        
+        <!-- Payment Status -->
+        <div id="payment-status" class="mt-2"></div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pos.js') }}"></script>
+{% endblock %}

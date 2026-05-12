@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Add User</h2>
+<form method="POST" class="card p-4 w-50">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.username.label(class="form-label") }} {{ form.username(class="form-control") }}</div>
+    <div class="mb-3">{{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}</div>
+    <div class="mb-3">{{ form.role_id.label(class="form-label") }} {{ form.role_id(class="form-select") }}</div>
+    <div class="mb-3">{{ form.branch_id.label(class="form-label") }} {{ form.branch_id(class="form-select") }}</div>
+    <div class="form-check mb-3">{{ form.is_active(class="form-check-input") }} {{ form.is_active.label(class="form-check-label") }}</div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

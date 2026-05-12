@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>2‑Factor Authentication Setup for {{ user.username }}</h2>
+<div class="card p-4" style="max-width:600px; margin:auto;">
+    <p>Scan this QR code with your authenticator app (e.g., Google Authenticator):</p>
+    <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="img-fluid">
+    <p class="mt-3"><strong>Manual setup key:</strong> <code>{{ secret }}</code></p>
+    <p class="text-muted">Keep this key safe. If the QR code cannot be scanned, use the manual key.</p>
+    <a href="{{ url_for('users') }}" class="btn btn-primary">Back to Users</a>
+</div>
+{% endblock %}

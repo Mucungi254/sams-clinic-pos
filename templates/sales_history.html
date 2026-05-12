@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Sales History – {{ branch.name }}</h2>
+<form method="GET" class="row g-3 mb-3">
+    <div class="col-auto">
+        <input type="date" name="start_date" class="form-control" value="{{ start_date or '' }}" placeholder="Start Date">
+    </div>
+    <div class="col-auto">
+        <input type="date" name="end_date" class="form-control" value="{{ end_date or '' }}" placeholder="End Date">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr><th>Receipt #</th><th>Amount</th><th>Payment</th><th>Date</th><th>View</th></tr>
+    </thead>
+    <tbody>
+    {% for sale in sales.items %}
+    <tr>
+        <td>{{ sale.receipt_number }}</td>
+        <td>KES {{ "%.2f"|format(sale.total_amount) }}</td>
+        <td>{{ sale.payment_method }}</td>
+        <td>{{ sale.sale_date.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td><a href="{{ url_for('receipt', sale_id=sale.id) }}" class="btn btn-sm btn-outline-info">Receipt</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No sales found.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+<nav>
+    <ul class="pagination">
+        {% if sales.has_prev %}
+        <li class="page-item"><a class="page-link" href="?page={{ sales.prev_num }}&start_date={{ start_date }}&end_date={{ end_date }}">Previous</a></li>
+        {% endif %}
+        {% for page_num in sales.iter_pages() %}
+            {% if page_num %}
+            <li class="page-item {{ 'active' if page_num == sales.page }}"><a class="page-link" href="?page={{ page_num }}&start_date={{ start_date }}&end_date={{ end_date }}">{{ page_num }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if sales.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ sales.next_num }}&start_date={{ start_date }}&end_date={{ end_date }}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}

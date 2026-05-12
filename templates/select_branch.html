@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Select Active Branch</h2>
+<form method="POST" class="card p-4 w-50">
+    <div class="mb-3">
+        <label for="branch_id" class="form-label">Choose Branch</label>
+        <select name="branch_id" id="branch_id" class="form-select">
+            {% for branch in branches %}
+            <option value="{{ branch.id }}">{{ branch.name }} ({{ branch.location }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">GO</button>
+</form>
+{% endblock %}

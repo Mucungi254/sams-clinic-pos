@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Expiry Alerts – {{ branch.name }}</h2>
+
+<div class="mb-3">
+    <span class="badge bg-success me-2">Safe (90+ days)</span>
+    <span class="badge bg-warning text-dark me-2">Near Expiry (31-90 days)</span>
+    <span class="badge bg-danger me-2">Expiring Soon (≤30 days)</span>
+    <span class="badge bg-dark">Expired (0 days)</span>
+</div>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr><th>Product</th><th>Category</th><th>Quantity</th><th>Expiry Date</th><th>Days Left</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+    {% for p in products %}
+    {% set days_left = (p.expiry_date - now).days %}
+    {% if days_left < 0 %}
+        {% set row_class = 'table-danger' %}
+        {% set status_badge = 'bg-dark' %}
+        {% set status_text = 'Expired' %}
+    {% elif days_left <= 30 %}
+        {% set row_class = 'table-danger' %}
+        {% set status_badge = 'bg-danger' %}
+        {% set status_text = 'Expiring Soon' %}
+    {% elif days_left <= 90 %}
+        {% set row_class = 'table-warning' %}
+        {% set status_badge = 'bg-warning text-dark' %}
+        {% set status_text = 'Near Expiry' %}
+    {% else %}
+        {% set row_class = 'table-success' %}
+        {% set status_badge = 'bg-success' %}
+        {% set status_text = 'Safe' %}
+    {% endif %}
+    <tr class="{{ row_class }}">
+        <td><strong>{{ p.name }}</strong></td>
+        <td>{{ p.category.name if p.category else 'N/A' }}</td>
+        <td>{{ p.quantity }}</td>
+        <td>{{ p.expiry_date.strftime('%Y-%m-%d') }}</td>
+        <td><strong>{{ days_left }}</strong></td>
+        <td><span class="badge {{ status_badge }}">{{ status_text }}</span></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-center text-success"><strong>No products expiring within 90 days.</strong></td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
