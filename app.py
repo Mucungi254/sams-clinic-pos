@@ -1110,35 +1110,44 @@ def create_expiry_excel(products, branch):
     response.headers['Content-Disposition'] = f'attachment; filename=expiry_report_{branch.name}_{date.today()}.xlsx'
     return response
 
+# ---------- Startup (always runs, even under Gunicorn) ----------
+with app.app_context():
+    db.create_all()
+    if not Role.query.first():
+        admin_role = Role(name='admin')
+        pharmacist_role = Role(name='pharmacist')
+        cashier_role = Role(name='cashier')
+        db.session.add_all([admin_role, pharmacist_role, cashier_role])
+        db.session.commit()
+
+        branch1 = Branch(name='SAMS Clinic A', location='Main Street')
+        branch2 = Branch(name='SAMS Clinic B', location='Market Road')
+        branch3 = Branch(name='SAMS Clinic C', location='Hospital Lane')
+        db.session.add_all([branch1, branch2, branch3])
+        db.session.commit()
+
+        admin = User(username='admin', password_hash=generate_password_hash('admin123'),
+                     role_id=admin_role.id, is_active=True)
+        pharmacist = User(username='pharm', password_hash=generate_password_hash('pharm123'),
+                          role_id=pharmacist_role.id, branch_id=branch1.id, is_active=True)
+        cashier = User(username='cash', password_hash=generate_password_hash('cash123'),
+                       role_id=cashier_role.id, branch_id=branch1.id, is_active=True)
+        db.session.add_all([admin, pharmacist, cashier])
+        db.session.commit()
+
+        categories = [
+            Category(name='Medications', description='Prescription and over-the-counter medications'),
+            Category(name='Medical Supplies', description='Medical equipment and supplies'),
+            Category(name='Personal Care', description='Personal hygiene and care products'),
+            Category(name='Vitamins & Supplements', description='Dietary supplements and vitamins'),
+            Category(name='First Aid', description='First aid supplies and emergency care'),
+            Category(name='Baby Care', description='Baby products and infant care'),
+            Category(name='Health Devices', description='Medical monitoring devices'),
+            Category(name='Herbal Products', description='Traditional and herbal medicines')
+        ]
+        db.session.add_all(categories)
+        db.session.commit()
+
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        if not Role.query.first():
-            admin_role = Role(name='admin')
-            pharmacist_role = Role(name='pharmacist')
-            cashier_role = Role(name='cashier')
-            db.session.add_all([admin_role, pharmacist_role, cashier_role])
-            db.session.commit()
-            branch1 = Branch(name='SAMS Clinic A', location='Main Street')
-            branch2 = Branch(name='SAMS Clinic B', location='Market Road')
-            branch3 = Branch(name='SAMS Clinic C', location='Hospital Lane')
-            db.session.add_all([branch1, branch2, branch3])
-            db.session.commit()
-            admin = User(username='admin', password_hash=generate_password_hash('admin123'), role_id=admin_role.id, is_active=True)
-            pharmacist = User(username='pharm', password_hash=generate_password_hash('pharm123'), role_id=pharmacist_role.id, branch_id=branch1.id, is_active=True)
-            cashier = User(username='cash', password_hash=generate_password_hash('cash123'), role_id=cashier_role.id, branch_id=branch1.id, is_active=True)
-            db.session.add_all([admin, pharmacist, cashier])
-            db.session.commit()
-            categories = [
-                Category(name='Medications', description='Prescription and over-the-counter medications'),
-                Category(name='Medical Supplies', description='Medical equipment and supplies'),
-                Category(name='Personal Care', description='Personal hygiene and care products'),
-                Category(name='Vitamins & Supplements', description='Dietary supplements and vitamins'),
-                Category(name='First Aid', description='First aid supplies and emergency care'),
-                Category(name='Baby Care', description='Baby products and infant care'),
-                Category(name='Health Devices', description='Medical monitoring devices'),
-                Category(name='Herbal Products', description='Traditional and herbal medicines')
-            ]
-            db.session.add_all(categories)
-            db.session.commit()
     app.run(debug=True)
